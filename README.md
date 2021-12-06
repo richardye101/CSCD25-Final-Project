@@ -18,7 +18,28 @@ The year 2019 to 2021 has seen countless events with global ramifications. As in
 
 ### The data
 
+In this analysis we use two filtered and cleaned data sources, `text_comments.csv.gz` and `text_submissions.csv.gz` as provided generously by my course professor. They contain the top ~5000 subreddits, which detail all the comments and submissions from January 2019 to June 2021. 
+
+#### Column Schema
+For both comments and submissions:  
+- `id`: a unique id for the item  
+- `score`: score of the item (upvotes minus downvotes, with some algorithmic ‘fuzzing’ applied)  
+- `author`: username of the user who posted the item, can be ‘[deleted]’ if an item has been deleted from its authors’ profile, or ‘AutoModerator’ if posted by the AutoModerator bot  
+- `subreddit`: name of the subreddit the item was posted in  
+- `created_utc`: time the item was posted, in Unix time  
+
+For comments only:
+- `link_id`: id of the link to which this comment belongs  
+- `body`: textual content of the comment  
+
+For submissions only:
+- `is_self`: True if a submission is a text-only ‘self-post’, False if the submission is a link  
+- `domain`: domain of the link  
+- `title`: title of the submission  
+- `selftext`: content of the self-post  
+
 Let's take a look at the first 5 rows of data in our two data sources, `text_comments.csv.gz` and `text_submissions.csv.gz`
+
 #### Comment text data
 
 <div>
@@ -183,10 +204,585 @@ We clearly have a lot of data to work with, but due to the time contraints assoc
 
 I'll now take a look at the distribution of the number of posts per subreddit.
 
-![Distribution of posts per subreddit]("")
+![Distribution of posts per subreddit](Figures/output_8_0.png)
 
-# Reddit: Analysis of content shift
+This data is very hard to read, as most subreddits have less than 20,000 posts but there are a few that reach around 120,000 in this subset. Lets take a look at the log distribution of the data, which spreads out the distribution of subreddits if they have a small number of posts and condenses the distribution of subreddits that have a lot of posts.
 
-What I want to analyze is how attitudes shifted across the platform, and what the main topics discussed on reddit were in their given time periods.
-The hypothesis is that 
+From this analysis, we can see a normal distribution starting to appear! Most of our data has around $e^5$ to $e^7$ number of posts. 
 
+## Research Question 1.
+
+To answer our first research question, we have to first look at  **How have subreddits grown and shrunk over the two years**.
+We want to see if there exists any trends in groups of subreddits that have grown or contracted together, and whether those growths or contractions are associated with positive or negative sentiments. For example, Formula One has seen large growth over the 2019-2021 time period due to the release of the _Drive to Survive_ Netflix show, attracting lots of new fans. An growth event in the Formula One subreddit should be expected come with positive sentiment.
+
+In order to perform this analysis, we'll first have to make sure the dates in our data are properly processed. The ```created_utc``` is currently in Unix time, so I have converted it to a standard, readable time format.
+
+### Calculating activity level changes through the date range given for each subreddit
+
+Define activity level here as `# posts + # comments = activity level`. We'll leave the individual activity levels as they are for now, and create a new column that merges them in our new aggregated dataset.
+
+Since we have such high resolution data for `created_utc` (times down to the second!), we will aggegrate up so we can see get the bigger picture of activity levels. Since it is more than 2 years worth of data, we can aggregate activity level by week. This preserves volatility within months but cutting down the number of value we have to deal with by a lot. There could have been some days that had no posts but had comments, or vice versa.
+
+We can preform these actions for each dataset separately, before merging it all into a dataset with weeks as our rows and activity levels for both submissions and comments as columns all grouped by subreddit.
+
+### Summary of activity within subreddits
+
+The following table shows us that most subreddits had over 3,100 comments and 319 posts/submissions over the past 2 and a half years.
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2" halign="left">act_lvl_comments</th>
+      <th colspan="2" halign="left">act_lvl_submissions</th>
+      <th colspan="2" halign="left">total_activity</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>sum</th>
+      <th>mean</th>
+      <th>sum</th>
+      <th>mean</th>
+      <th>sum</th>
+      <th>mean</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>4.474000e+03</td>
+      <td>4474.000000</td>
+      <td>4474.000000</td>
+      <td>4474.000000</td>
+      <td>4.474000e+03</td>
+      <td>4474.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>8.386609e+03</td>
+      <td>72.432462</td>
+      <td>780.684175</td>
+      <td>6.525290</td>
+      <td>9.167293e+03</td>
+      <td>78.957752</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>3.653893e+04</td>
+      <td>299.227174</td>
+      <td>2976.810469</td>
+      <td>23.657839</td>
+      <td>3.912499e+04</td>
+      <td>319.474804</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>2.540000e+02</td>
+      <td>3.135802</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>2.570000e+02</td>
+      <td>3.172840</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>1.737000e+03</td>
+      <td>14.139313</td>
+      <td>181.000000</td>
+      <td>1.470781</td>
+      <td>1.973250e+03</td>
+      <td>16.167939</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>2.912500e+03</td>
+      <td>24.007634</td>
+      <td>319.500000</td>
+      <td>2.574721</td>
+      <td>3.300000e+03</td>
+      <td>27.142227</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>6.271500e+03</td>
+      <td>52.030395</td>
+      <td>662.000000</td>
+      <td>5.406489</td>
+      <td>6.981750e+03</td>
+      <td>57.756268</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>1.895300e+06</td>
+      <td>14467.938931</td>
+      <td>128332.000000</td>
+      <td>979.633588</td>
+      <td>2.023632e+06</td>
+      <td>15447.572519</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+Lets take a look at the first subreddit to see how our data looks!
+
+![png](Figures/output_29_1.png)
+
+For this particular subreddit we can see that as time went on, total activity levels have dropped over time. Notice that most of the volatility is due to the comment activity fluctuations. We can also observe that around new years, activity levels peak and then drops back down.
+
+### Measuring activity level growth and contraction
+
+With this data, we can easily calculate changes in activity level and group subreddits based on their respective level of change. We'll calculate the overall trend using linear regression over the entire time period for each subreddit, which will serve as our average change over time.
+
+Diving deeper into the data, we see exactly which subreddits had the most contraction and most growth:
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Average change in overall activity per week</th>
+    </tr>
+    <tr>
+      <th>subreddit</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>TITWcommentdump</th>
+      <td>-348.1786</td>
+    </tr>
+    <tr>
+      <th>csci040temp</th>
+      <td>-117.8000</td>
+    </tr>
+    <tr>
+      <th>TITWleaderboard</th>
+      <td>-96.2667</td>
+    </tr>
+    <tr>
+      <th>pan_media</th>
+      <td>-83.5325</td>
+    </tr>
+    <tr>
+      <th>WallStreetbetsELITE</th>
+      <td>-69.4371</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>SHIBArmy</th>
+      <td>39.5613</td>
+    </tr>
+    <tr>
+      <th>wallstreetbets</th>
+      <td>54.2944</td>
+    </tr>
+    <tr>
+      <th>amcstock</th>
+      <td>100.5929</td>
+    </tr>
+    <tr>
+      <th>Superstonk</th>
+      <td>113.6901</td>
+    </tr>
+    <tr>
+      <th>kfq</th>
+      <td>2766.8000</td>
+    </tr>
+  </tbody>
+</table>
+<p>4474 rows × 1 columns</p>
+</div>
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Average change in overall activity per week</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>4474.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>0.604920</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>41.930156</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>-348.178600</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>-0.041750</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>0.075600</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>0.220800</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>2766.800000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+Looking at a box plot of the average change per week, we see that we have a huge outlier with a growth rate of 2766 in our data. 
+
+![png](Figures/output_35_1.png)
+
+We'll examine that one subreddit later on.
+
+Lets plot a histogram of the average slope to analyze the distribution, omitting the outlier at 2766
+
+![png](output_40_1.png)
+
+We can see that **most** subreddits experiences little to no change at all, as the high bar in the middle at 0 represents most of the subreddits.
+
+### Subdividing and filtering subreddits
+
+#### Filtering
+What we want to do now is split subreddits into those that grew in activity level, and those that contracted. I also want to filter out any subreddits that didn't have much activity at all.
+
+The platform shows posts(submissions) filtered based a couple categories. The "hot" filter orders posts by most upvotes recently to least. The "new" filter orders posts by newest to oldest. The "top" filter orders posts by highest total number of votes to least. Lastly, the "rising" filter predicts which posts will be "successful" (in their words) based on post age, subreddit size, and votes per minute.
+
+From my personal experience, I mainly use the hot and new filters while only occasionally using the top filter. This means that my interactions with subreddits are generally with current posts. Based on this assumption, it would imply subreddits with few or no posts per week don't generate as much interaction as those that do have many posts per week. This tells me that I only want to look at subreddits that have at least 5 posts a week on average. I will classify any subreddit with less posts per week on average as *too small*.
+
+According to the previous `Summary of activity within subreddits` output, this measure corresponds with subreddits above the **75th percentile**, with a mean submission per week number of ~5 posts.
+
+We also want to filter out any subreddits that didn't change much at all. To just filter out subreddits with a mean slope around 0 would ignore subreddits whose activity climbed and dropped by the same amount, over the same time frame lengths. To counteract this, we will filter out subreddits with a low **absolute sum** of the first differences in activity levels along with any subreddits with a slope within -1 and 1. These restrictions mean we will effectively be excluding 90% of our data. (This is helpful from both an interpretation perspective and computation perspective.)
+
+This table shows some of the sites we have remaining after filtering:
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>subreddit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>196</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2007scape</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>ACNHvillagertrade</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>ACTrade</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>ACVillager</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>321</th>
+      <td>wallstreetbets</td>
+    </tr>
+    <tr>
+      <th>322</th>
+      <td>wholesomememes</td>
+    </tr>
+    <tr>
+      <th>323</th>
+      <td>wildrift</td>
+    </tr>
+    <tr>
+      <th>324</th>
+      <td>worldnews</td>
+    </tr>
+    <tr>
+      <th>325</th>
+      <td>yeagerbomb</td>
+    </tr>
+  </tbody>
+</table>
+<p>326 rows × 1 columns</p>
+</div>
+
+## Dividing subreddits into chunks
+
+All this prep work was done in order to help us analyze the ways that subreddits grew and contracted over time. So naturally we want to understand why some subreddits grew and why some subreddits shrank. 
+
+_(We won't be looking at those that didnt really change in activity level.)_
+
+To understand the intricacies between subreddits, we need to increase the resolution of our data and one way to do that is to group subreddits by their _level_ of change, as determined by which percentile they lie in. Due to the fact we have 326 subreddits to work with after filtering, we will settle with the splitting both the growing and contracting datasets into halves: 
+
+- **Growth**
+ -  **High Growth, Low Growth**
+ - Growth Threshold: 2.01
+  * This threshold determines whether a subreddit belongs in the high or low growth category
+- **Contraction**
+ -  **High Contraction, Low Contraction**
+ - Contraction Threshold: -2.44
+   * This threshold determines whether a subreddit belongs in the high or low contraction category
+
+
+### Growth subreddits
+
+Here we look at the distribution of average activity level change in contracted subreddits.
+
+**Add in describe table here**
+
+It seems that we've been able to capture all the subreddits with growth, even subreddit with the largest overall growth.
+
+### High growth Subreddits
+
+Here are some of the high growth subreddits:
+
+- MAAU
+- wildrift
+- lgbt
+- PoliticalHumor
+- politics
+- nottheonion
+- mechmarket
+- NoStupidQuestions
+- Whatcouldgowrong
+- Genshin_Impact
+- SHIBArmy
+- wallstreetbets
+
+### Low Growth Subreddits
+
+Here are some of the low growth subreddits:
+
+- cats
+- formuladank
+- dating_advice
+- PersonalFinanceCanada
+- h3h3productions
+- playstation
+- italy
+- WatchPeopleDieInside
+- fivenightsatfreddys
+- LifeProTips
+- FemaleDatingStrategy
+- nvidia
+
+
+### Contracted subreddits
+
+Here we look at the distribution of average activity level change in contracted subreddits.
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Statistics</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>count</th>
+<td>15307.00</td>
+    </tr>
+    <tr>
+<th>mean</th>
+<td>-4.12</td>
+    </tr>
+    <tr>
+<th>std</th>
+<td>7.01</td>
+    </tr>
+    <tr>
+<th>min</th>
+<td>-83.53</td>
+    </tr>
+    <tr>
+<th>25%</th>
+<td>-3.748400</td>
+    </tr>
+    <tr>
+<th>50%</th>
+<td>-2.28</td>
+    </tr>
+    <tr>
+<th>75%</th>
+<td>-1.46</td>
+    </tr>
+    <tr>
+<th>max</th>
+<td>-1.01</td>
+    </tr>
+  </tbody>
+</table>
+<p>326 rows × 1 columns</p>
+</div>
+    
+Comparing our previous results to this table of average changes, it seems we're missing the top three subreddits with the largest change.
+
+![png](Figures/output_55_0.png)
+
+The bulk of activity in _TITWcommentdump_ and _TITWleaderboard_ occured in early 2021, dying off really quickly. A quick google tells us that people essentially spam _"THIS IS THE WAY"_ in posts and comments, and the leaderboard subreddit tracks who spammed that phrase the most. This subreddit seems to be related to __The Mandalorian__, as _"This is the way"_ is one of the shows iconic phrases. 
+
+_csci40temp_ is a subreddit used by students of a computer science course where they can spam/test bots. This makes sense as activity within this subreddit was short-lived. They are rightfully excluded by our filter.
+
+Let's continue with our analysis, starting off with the high contraction followed by low contraction datasets.
+
+### High Contraction Subreddits
+
+Here are some of the high contraction subreddits:
+
+- Coronavirus
+- GME
+- AskReddit
+- dankmemes
+- funny
+- me_irl
+- gaming
+- worldnews
+- entitledparents
+- CFB
+- ukpolitics
+- smashbros
+
+### Low Contraction Subreddits
+
+Here are some of the low contraction subreddits:
+
+- Warframe
+- AnimalsOnReddit
+- COVID19
+- mildlyinteresting
+- Overwatch
+- dank_meme
+- MurderedByWords
+- leagueoflegends
+- comedyheaven
+- teslamotors
+- Borderlands
+- atheism
+
+After collecting average changes for each subreddit and removing the outlier, this is now our distribution of change!
+
+![png](Figures/output_68_1.png)
+
+We can see that there are still lots of subreddits with average change around 0, but we know they are all above |1| based on our filtering.
+
+## Subreddit clustering by submission text
+
+Now that we've finally cleaned and organized our subreddits, we want to be able to cluster the subreddits in each group together and examine the similarities they share. This is in an effort to understand why they have shared the same growth numbers.
+
+We'll first merge the ```title``` and ```selt_text``` columns from a given submission into one column. 
+
+**I've decided not to include comment text in my word embeddings, due to the fact comments commonly stray off topic and are more related to personal experiences rather than the submission/post. The post itself is more reliably related to the given subreddit, since many subreddits have rules on what can and cannot be posted within them.**
+
+We are essentially gathering all the words associated to a given subreddit into one column on which we can create __bag of words__ vectors. We will then feed that matrix into the **tf-IDF transformer** which augments the bag of words matrix by giving less weight to common words to improve the amount of information we can obtain.
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>text</th>
+      <th>avg_chg</th>
+      <th>category</th>
+    </tr>
+    <tr>
+      <th>subreddit</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>196</th>
+      <td>\n\n[View Poll](https://www.reddit.com/poll/np...</td>
+      <td>27.8067</td>
+      <td>high_growth</td>
+    </tr>
+    <tr>
+      <th>2007scape</th>
+      <td>looking for some west coasters to personally a...</td>
+      <td>-1.7927</td>
+      <td>low_contract</td>
+    </tr>
+    <tr>
+      <th>ACNHvillagertrade</th>
+      <td>Pink hippo bitty in boxes heavily gifted I don...</td>
+      <td>-1.5510</td>
+      <td>low_contract</td>
+    </tr>
+    <tr>
+      <th>ACTrade</th>
+      <td>Howdy all! I haven’t played AC for about a yea...</td>
+      <td>4.7686</td>
+      <td>high_growth</td>
+    </tr>
+    <tr>
+      <th>ACVillager</th>
+      <td>Currently can do 10 NMT and 3 Million Bells or...</td>
+      <td>-6.2110</td>
+      <td>high_contract</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>wallstreetbets</th>
+      <td>Let me introduce you to the ratio spread.\n\nT...</td>
+      <td>54.2944</td>
+      <td>high_growth</td>
+    </tr>
+    <tr>
+      <th>wholesomememes</th>
+      <td>Every shitty horror movie you’re doing just f...</td>
+      <td>-1.5314</td>
+      <td>low_contract</td>
+    </tr>
+    <tr>
+      <th>wildrift</th>
+      <td>https://ibb.co/3NLSm9G\n\nNothing impressive t...</td>
+      <td>1.8571</td>
+      <td>low_growth</td>
+    </tr>
+    <tr>
+      <th>worldnews</th>
+      <td>[removed]\n\n[View Poll](https://www.reddit.co...</td>
+      <td>-3.4403</td>
+      <td>high_contract</td>
+    </tr>
+    <tr>
+      <th>yeagerbomb</th>
+      <td>What I love about Eldia is I just get to be m...</td>
+      <td>5.3669</td>
+      <td>high_growth</td>
+    </tr>
+  </tbody>
+</table>
+<p>326 rows × 3 columns</p>
+</div>
