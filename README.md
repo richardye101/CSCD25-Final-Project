@@ -1,4 +1,4 @@
-## Introduction
+## Analysis of activity shifts on reddit
 
 In this work, I take a look at the changes in subreddit activity levels, how they shifted and whether certain communities on reddit shifted together. 
 
@@ -683,6 +683,18 @@ Here are some of the low contraction subreddits:
 - Borderlands
 - atheism
 
+### The outlier
+
+As per the average change analysis, we know there's a huge activity level outlier: the one subreddit **kfq**, that saw an average activity level growth of 2766. This subreddit is mainly in chinese. It's description is:
+
+_"The Wandering KFQ @ 20190301. Here is a mirror sub of a Chinese community which has been closed by censorship problem."_
+
+We can reasonably assume the huge activity is due to the migration of posts from the original subreddit, and is used purely to store posts since was no new posts as of March 31st, 2019.
+
+We will exclude that subreddit so that we can see differences in activity level change between the rest of the subreddits in a clearer fashion.
+
+![png](Figures/output_71_1.png)
+
 After collecting average changes for each subreddit and removing the outlier, this is now our distribution of change!
 
 ![png](Figures/output_68_1.png)
@@ -693,11 +705,11 @@ We can see that there are still lots of subreddits with average change around 0,
 
 Now that we've finally cleaned and organized our subreddits, we want to be able to cluster the subreddits in each group together and examine the similarities they share. This is in an effort to understand why they have shared the same growth numbers.
 
-We'll first merge the ```title``` and ```selt_text``` columns from a given submission into one column. 
-
 **I've decided not to include comment text in my word embeddings, due to the fact comments commonly stray off topic and are more related to personal experiences rather than the submission/post. The post itself is more reliably related to the given subreddit, since many subreddits have rules on what can and cannot be posted within them.**
 
 We are essentially gathering all the words associated to a given subreddit into one column on which we can create __bag of words__ vectors. We will then feed that matrix into the **tf-IDF transformer** which augments the bag of words matrix by giving less weight to common words to improve the amount of information we can obtain.
+
+Below I've joined all the text within the ```title``` and ```selt_text``` columns from every submission into one column for every subreddit. The `text` column is what we will perform the bag of words algorithm from `sklearn.feature_extraction.text` called `CountVectorizer`.
 
 <div>
 <table border="1" class="dataframe">
@@ -786,3 +798,10 @@ We are essentially gathering all the words associated to a given subreddit into 
 </table>
 <p>326 rows × 3 columns</p>
 </div>
+
+
+
+## 
+Using K-Means, we're able cluster subreddits together based on their tf-IDF matrices after performing dimensionality reduction on them. We can see that the clusters below are not differentiated by whether a subreddit grew by a lot, or not by much.
+
+The following plots helpfully groups subreddits together into topics. We will start off by examining the subreddits that experienced growth.
