@@ -689,11 +689,11 @@ As per the average change analysis, we know there's a huge activity level outlie
 
 _"The Wandering KFQ @ 20190301. Here is a mirror sub of a Chinese community which has been closed by censorship problem."_
 
+![png](Figures/output_71_1.png)
+
 We can reasonably assume the huge activity is due to the migration of posts from the original subreddit, and is used purely to store posts since was no new posts as of March 31st, 2019.
 
 We will exclude that subreddit so that we can see differences in activity level change between the rest of the subreddits in a clearer fashion.
-
-![png](Figures/output_71_1.png)
 
 After collecting average changes for each subreddit and removing the outlier, this is now our distribution of change!
 
@@ -707,7 +707,7 @@ Now that we've finally cleaned and organized our subreddits, we want to be able 
 
 **I've decided not to include comment text in my word embeddings, due to the fact comments commonly stray off topic and are more related to personal experiences rather than the submission/post. The post itself is more reliably related to the given subreddit, since many subreddits have rules on what can and cannot be posted within them.**
 
-We are essentially gathering all the words associated to a given subreddit into one column on which we can create __bag of words__ vectors. We will then feed that matrix into the **tf-IDF transformer** which augments the bag of words matrix by giving less weight to common words to improve the amount of information we can obtain.
+We are essentially gathering all the words associated to a given subreddit into one column on which we can create __bag of words__ vectors. We will then feed that matrix into the _**t**erm **f**requency - **I**nverse **D**ocument **F**requency_ **(tf-IDF) transformer** which augments the bag of words matrix by giving less weight to common words to improve the amount of information we can obtain.
 
 Below I've joined all the text within the ```title``` and ```selt_text``` columns from every submission into one column for every subreddit. The `text` column is what we will perform the bag of words algorithm from `sklearn.feature_extraction.text` called `CountVectorizer`.
 
@@ -799,7 +799,27 @@ Below I've joined all the text within the ```title``` and ```selt_text``` column
 <p>326 rows × 3 columns</p>
 </div>
 
+### Visualizing our subreddits
 
+So we've created a tf-IDF matrix based on the `text` column above. What now? Well because each subreddit is now represented by 500 words, we can think of all our subreddits residing in a 500 dimensional space. Thats crazy! Theres no way we can look at 500 dimensions at once, so in order to make the digestion of our data easier, we'll use **Principle Components Analysis (PCA)** to find a way to reduce that all the dimensions down into just 10, and we will subsequently look at the top 2 dimensions (which capture the most variance in the data).
+
+On the left, we have a cluster of primarily gaming subreddits in green. They had a mix of low and high contraction in activity levels. These games however seemed to belong to a sub-category of big name FPS games, such as Overwatch, Call of Duty: Cold War, Battlefield V, The Last of Us 2, and Destiny. 
+
+In purple, we have a variety of subreddits, from sports like NBA and NFL, to r/wallstreetbets spinoffs like Wallstreetsilver and WallStreebetsELITE. This cluster is not very cohesive, so it is hard derive any insight from it.
+
+Near the bottom, we have a red cluster of primarily joke/meme/funny topic related subreddits such as TheMemersClub, dankmemes, wholesomememes as well as some shows such as WANDAVISION, gameofthrones, and rupaulsdragrace.
+
+On the right, we have a cluster of blue subreddits which don't seemingly relate to eachother as they contain subreddits focused on the Animal Crossing game such as ACVillager, ACNHvillagertrade, AnimalCrossingTrading, AnimalCrossingNewHor, and TurnipExchange while also containing various subreddits from other topics such as todayilearned and MemeEconomy.
+
+On the right we also have a tiny orange cluster of subreddits almost exclusively dedicated to the COVID-19 pandemic/world news.
+
+| Cluster Number | Cluster Colour | Potential Grouping |
+| :-: | :-: | :-: |
+| 2| Green | First Person Shooter (FPS) Video Games |
+| 4| Purple | NBA/NFL/Wall Street Bet spinoffs/Russian |
+| 1| Red | Jokes/memes/funny |
+| 3| Blue | Animal Crossing/memes |
+| 0| Orange | COVID-19 |
 
 ## 
 Using K-Means, we're able cluster subreddits together based on their tf-IDF matrices after performing dimensionality reduction on them. We can see that the clusters below are not differentiated by whether a subreddit grew by a lot, or not by much.
