@@ -803,6 +803,31 @@ Below I've joined all the text within the ```title``` and ```selt_text``` column
 
 So we've created a tf-IDF matrix based on the `text` column above. What now? Well because each subreddit is now represented by 500 words, we can think of all our subreddits residing in a 500 dimensional space. Thats crazy! Theres no way we can look at 500 dimensions at once, so in order to make the digestion of our data easier, we'll use **Principle Components Analysis (PCA)** to find a way to reduce that all the dimensions down into just 10, and we will subsequently look at the top 2 dimensions (which capture the most variance in the data).
 
+Using K-Means, we're able cluster subreddits together based on their tf-IDF matrices after performing dimensionality reduction on them. We can see that the clusters below don't really care whether a subreddit grew by a lot, or not by much.
+
+What the following plots do is group subreddits together into topics. We will start off by examining the subreddits that experienced growth.
+
+#### Subreddits that experienced growth
+
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plotly.com/~chris/1638.embed" height="525" width="100%"></iframe>  
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>  
+
+<iframe width="100%" height="475" src="https://dotnetfiddle.net/Widget/CsCons" frameborder="0"></iframe>  
+
+It's much harder to distinguish groups within the growth subreddits, as they are made up of many different online communities. I attempt to classify them below:
+
+| Cluster Number | Cluster Colour | Potential Grouping |
+| :-: | :-: | :-: |
+| 5 | Purple | Memes/General |
+| 0 | Cyan | Politics |
+| 2 | Blue | Tech/Pokemon/Animal Crossin/CryptoCurrency |
+| 7 | Light Green | Spanish |
+| 6 | Orange | Gaming |
+| 1 | Pink | Sports/memes/Anime |
+| 4 | Red | Stocks/Crypto |
+| 3 | Green | Turkish/Roblox/memes |
+
 On the left, we have a cluster of primarily gaming subreddits in green. They had a mix of low and high contraction in activity levels. These games however seemed to belong to a sub-category of big name FPS games, such as Overwatch, Call of Duty: Cold War, Battlefield V, The Last of Us 2, and Destiny. 
 
 In purple, we have a variety of subreddits, from sports like NBA and NFL, to r/wallstreetbets spinoffs like Wallstreetsilver and WallStreebetsELITE. This cluster is not very cohesive, so it is hard derive any insight from it.
@@ -821,7 +846,55 @@ On the right we also have a tiny orange cluster of subreddits almost exclusively
 | 3| Blue | Animal Crossing/memes |
 | 0| Orange | COVID-19 |
 
-## 
-Using K-Means, we're able cluster subreddits together based on their tf-IDF matrices after performing dimensionality reduction on them. We can see that the clusters below are not differentiated by whether a subreddit grew by a lot, or not by much.
 
-The following plots helpfully groups subreddits together into topics. We will start off by examining the subreddits that experienced growth.
+
+As we can see, there are some clear topics/communities that contracted such as COVID-19, FPS Video Games while some clear communities that grew such as politics, stocks/cryptocurrency, and other gaming categories.
+
+We could probably explain the decline in COVID-19 related subreddits as people got tired of talking and hearing about the on-going pandemic. As restrictions lifted, people could have played less video games (specifically FPS games and Animal Crossing) resulting in related subreddits to decrease in activity as well. Interestingly, the actual Animal Crossing subreddit had high growth in activity level, even though it's related subreddits decreased in activity level.
+
+![animal_crossing.png](Figures/animal_crossing.png)
+
+## Analyzing the growth patterns of each cluster
+
+### Growth clusters
+
+![png](Figures/output_99_0.png)
+
+### Contraction clusters
+
+![png](Figures/output_101_0.png)
+
+### Analysis of the community activity plots
+
+This is a lot of data to digest! Here are some thoughts:
+
+#### Growth 
+
+Starting off with the communities/clusters of subreddits that grew, we see that the Tech/Pokemon/Animal Crossing/CryptoCurrency and Stocks/Crypto Currency clusters grew quite similarly, but thats most likely due to the fact they both contained similar subreddits. The rest of the subreddit clusters don't share many similarities in when they grew, so unfortunately we cannot make any insight into whether certain clusteres of communities on reddit grew.
+
+What we can observe from these graphs is the jump in activity in almost all the clusters around early 2020, between January and July. This correlates well with when COVID-19 lockdowns started to be put in place around the world.
+
+#### Contraction
+
+Less clusters worked better in terms of clustering subreddits that contracted, since in the first two dimensions of our submission text embedding space the subreddits appeared to have some sem-distinct groupings already. 
+
+Also very similarly to the growth category of subreddits, we see a jump in activity early 2020 between January and July as well for these subreddits. Albeit with this group on subreddits, it doesn't seem as though that was enough to spur new activity in these subreddits. 
+
+## Conclusion of part 1: Analysis of similarities between subreddits that changed together over January 2019 - June 2021.
+
+So to conclude this section, we did quite a bit of data cleaning and separation. We first calculated the average rate of change in the amount of submissions and comments in each subreddit which we rolled up into ```total_activity```. We then filtered out subreddits that didn't change much over the time span of data we have, and subsequently separated them into groups of sub-reddits that grew, and subreddits that contracted. After figuring out which subreddits we want to analyze, we were able to obtain all the submission text (including titles of posts and the content, if any, attached) and construct a tf-IDF matrix. 
+
+### The NLP analysis
+This matrix represents each subreddit by a vector of 500 words, which more "important" words weighing more than common words. Using this we performed PCA analysis to identify 10 dimensions that capture the most variance between the subreddits, visualizing the top 2. We clustered subreddits together based on these 10 dimensions using the KMeans algorithm, and tried our best to interpret the clustering. From there we examined how each of our clusters changed in ```total_activity``` in relation to eachother. We were unable to identify any strong similarities between subreddits, **but** all subreddits _grew_ in early 2020, between January and June as lockdowns around the world started being put in place.
+
+### Comment data
+
+Due to time constraints, I will not be using the comment text data for the sentiment analysis even though it provides a lot of information due to the time constraints with this project. It would involve running ~2.8gb of data through word2vec, and that will take too long to run.
+
+# Part 2: Sentiment Analysis
+
+In the following section, we'll take a look at the sentiment associated with the growth and contraction groups of subreddits respectively to determine whether there was any sentiment associated with the growth or decline in activity level.
+
+To do this, we will be using the classic word2vec neural network along with the popular vader lexicon.
+
+Due to time constraints, I will only look at the contracted subreddits.
