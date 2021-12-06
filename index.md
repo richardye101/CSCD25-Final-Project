@@ -1,10 +1,21 @@
-## Welcome to GitHub Pages
+## Introduction
 
-You can use the [editor on GitHub](https://github.com/richardye101/reddit_sentiment_analysis/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+In this work, I take a look at the changes in subreddit activity levels, how they shifted and whether certain communities on reddit shifted together. 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Abstract
 
-### Markdown
+The year 2019 to 2021 has seen countless events with global ramifications. As individuals become increasingly interconnected online through social media, it raises questions about how they are interacting with one another on these platforms and why. To understand these changes is to understand what people find most interesting or important, and how they feel about them. In this work, we will take a stab at answering this question by examining a subset of ~5000 reddit communities and the changes in activity level within them, as well as whether the sentiment associated with the activity is positive or negative. We will look at subreddits that have grown in size, and those that have contracted separately, and try to understand what sets them apart. We will then identify whether the activity through the grown/contraction phases is largely related to positive or negative sentiment, time permitting.
+
+### Research questions:
+
+1. What are the similarities shared between subreddits that experienced similar activity level changes?  
+  * Did the ones that grew/contracted:
+    - experience that growth during similar time periods, and are there any reasons why?  
+    - share common topics?
+2. What kind of sentiment can we relate to subreddits that experienced similar activity level changes?  
+  * Was there any sentiment associated with these changes?  
+  * Was growth/contraction associated with very positive/negative sentiments? (I.e. Was the change driven by love/attraction or by hate/repulsion?)  
+
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
