@@ -1047,6 +1047,15 @@ If we look at the row that describes the mean, we can see that there is on avera
 
 Based solely on this analysis, we see that the proportions of positive and negative sentiment are really similar between the subreddits that grew and those that contracted.
 
+### T-tests on positive and negative sentiment between subreddits that grew and subreddits that contracted
+
+- **P-value of positive sentiment t-test: 13.58%**
+- **P-value of negative sentiment t-test: 49.56%**
+
+From our t-tests of each negative and positive sentiment scores for each subreddit, we can see clearly from their p-values that they are both greater than 5%, which means we cannot reject the null hypothesis, which states that subreddits that contracted and grew should have the same negative and positive sentiment value on average.
+
+Therefore we there does not exist enough statistically significant proof that subreddits that grew and subreddits that contracted are _different_ in terms of sentiment.
+
 # Conclusion
 
 We were able to find some interesting results with our analysis of the activity level changes between subreddits that grew and subreddits that contracted, and we were somewhat successful in clustering subreddits based on similar topics. We found that regardless of the overall activity change observed over the 2.5 years of data we have, there was a significant uptick in activity for all our filtered subreddits in early 2020, when COVID-19 lockdowns were being put in place around the world.
