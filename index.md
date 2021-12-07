@@ -811,7 +811,7 @@ What the following plots do is group subreddits together into topics. We will st
 
 #### Subreddits that experienced growth
 
-<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/cluster_growth_new.html" height="725" width="120%"></iframe>  
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="cluster_growth_new.html" height="725" width="120%"></iframe>  
 
 It's much harder to distinguish groups within the growth subreddits, as they are made up of many different online communities. I attempt to classify them below:
 
