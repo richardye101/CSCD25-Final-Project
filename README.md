@@ -979,11 +979,11 @@ We were able to find some interesting results with our analysis of the activity 
 Based on our brief sentiment analysis of the sentiment associated with each subreddit's submissions, we cannot conclusively say whether _activity level changes in subreddits are positively correlated with the degree of positive or negative sentiment associated with the activity._ We have only seen that there seems to be more positive sentiment associated with these contracted subreddits, but without looking at the growth subreddits as well, we cannot say whether that larger proportion of positive sentiment is meaningful or not.
 
 If you'd like to learn more about me, check out this [video introduction of me](https://www.youtube.com/embed/dQw4w9WgXcQ)
-
-
-
-
-
-
-
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 Or you could checkout my [personal website](https://richardye.netlify.app/)
