@@ -890,7 +890,7 @@ This matrix represents each subreddit by a vector of 500 words, which more "impo
 
 ### Comment data
 
-Due to time constraints, I will not be using the comment text data for the sentiment analysis even though it provides a lot of information due to the time constraints with this project. It would involve running ~2.8gb of data through word2vec, and that will take too long to run.
+Due to time constraints, I will not be using the comment text data for the sentiment analysis even though it provides a lot of information due to the time constraints with this project. It would involve running ~2.8gb of data through a sentiment processor, and that will take too long to run.
 
 # Part 2: Sentiment Analysis
 
