@@ -900,7 +900,7 @@ To do this, we will be using the `SentimentIntensityAnalyzer` powered by the pop
 
 ## Subreddits that grew
 
-<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/prop_sentiment_growth.html" height="525" width="100%"></iframe>  
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/prop_sentiment_growth.html" height="525" width="120%"></iframe>  
 From the left, we see the subreddit with the most postiive sentiment also has the most negative sentiment. A deeper dive into [r/TIHI](https://www.reddit.com/r/TIHI/) shows that its generally about things people hate, and asks for otheres opinion on whether their opinion is justified. It seems that the subreddit itself is negative, but with the "Thanks..." required in each submission, it seems as though positive and negative sentiments have been balanced out. 
 
 We can also examine the average sentiment statistics:
