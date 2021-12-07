@@ -811,7 +811,7 @@ What the following plots do is group subreddits together into topics. We will st
 
 #### Subreddits that experienced growth
 
-<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plotly.com/~chris/1638.embed" height="525" width="100%"></iframe>  
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/cluster_growth.html" height="525" width="100%"></iframe>  
 
 It's much harder to distinguish groups within the growth subreddits, as they are made up of many different online communities. I attempt to classify them below:
 
@@ -825,6 +825,10 @@ It's much harder to distinguish groups within the growth subreddits, as they are
 | 1 | Pink | Sports/memes/Anime |
 | 4 | Red | Stocks/Crypto |
 | 3 | Green | Turkish/Roblox/memes |
+
+### Subreddits that experienced contraction
+
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/cluster_growth.html" height="525" width="100%"></iframe>  
 
 On the left, we have a cluster of primarily gaming subreddits in green. They had a mix of low and high contraction in activity levels. These games however seemed to belong to a sub-category of big name FPS games, such as Overwatch, Call of Duty: Cold War, Battlefield V, The Last of Us 2, and Destiny. 
 
@@ -843,7 +847,6 @@ On the right we also have a tiny orange cluster of subreddits almost exclusively
 | 1| Red | Jokes/memes/funny |
 | 3| Blue | Animal Crossing/memes |
 | 0| Orange | COVID-19 |
-
 
 
 As we can see, there are some clear topics/communities that contracted such as COVID-19, FPS Video Games while some clear communities that grew such as politics, stocks/cryptocurrency, and other gaming categories.
@@ -895,7 +898,79 @@ In the following section, we'll take a look at the sentiment associated with the
 
 To do this, we will be using the `SentimentIntensityAnalyzer` powered by the popular vader lexicon from `nltk.sentiment`.
 
-Due to time constraints, I will only look at the contracted subreddits.
+## Subreddits that grew
+
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/prop_sentiment_growth.html" height="525" width="100%"></iframe>  
+From the left, we see the subreddit with the most postiive sentiment also has the most negative sentiment. A deeper dive into [r/TIHI](https://www.reddit.com/r/TIHI/) shows that its generally about things people hate, and asks for otheres opinion on whether their opinion is justified. It seems that the subreddit itself is negative, but with the "Thanks..." required in each submission, it seems as though positive and negative sentiments have been balanced out. 
+
+We can also examine the average sentiment statistics:
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>neg</th>
+      <th>neu</th>
+      <th>pos</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>185.000000</td>
+      <td>185.000000</td>
+      <td>185.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>0.095876</td>
+      <td>0.765146</td>
+      <td>0.138962</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>0.049683</td>
+      <td>0.079701</td>
+      <td>0.048680</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>0.005000</td>
+      <td>0.274000</td>
+      <td>0.005000</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>0.064000</td>
+      <td>0.725000</td>
+      <td>0.119000</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>0.091000</td>
+      <td>0.762000</td>
+      <td>0.140000</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>0.124000</td>
+      <td>0.798000</td>
+      <td>0.161000</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>0.409000</td>
+      <td>0.991000</td>
+      <td>0.317000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+Based purely on sentiment, we have an average of 13.89% positive sentiment, and 9.58% negative sentiment. It appears there exists a bit more positive sentiment than negative sentiment within subreddits that grew.
+
+## Subreddits that contracted
 
 <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/prop_sentiment_contract.html" height="525" width="120%"></iframe>  
 
@@ -903,9 +978,7 @@ Starting from the left side of this graph, we can see that r/wholesomememes had 
 
 Further to the right, we can see a noticeable spike in negative sentiment in the r/MurderedbyWords subreddit, which is dedicated to comebacks and counter-argumemts. 
 
-Based solely on this analysis, we are unable to conclude whether decline in subreddit activity is associated with negative sentiment, leaving our hypothesis inconclusive.
-
-We can however examine the average sentiment statistics:
+We can also examine the average sentiment statistics:
 
 <div>
 <table border="1" class="dataframe">
@@ -970,15 +1043,21 @@ We can however examine the average sentiment statistics:
 </table>
 </div>
 
-If we look at the row that describes the mean, we can see that there is on average more positive sentiment associated with these subreddits than there is negative sentiment. 
+If we look at the row that describes the mean, we can see that there is on average 14.63% positive sentiment associated with these subreddits and 9.92% negative sentiment. 
+
+Based solely on this analysis, we see that the proportions of positive and negative sentiment are really similar between the subreddits that grew and those that contracted.
 
 # Conclusion
 
 We were able to find some interesting results with our analysis of the activity level changes between subreddits that grew and subreddits that contracted, and we were somewhat successful in clustering subreddits based on similar topics. We found that regardless of the overall activity change observed over the 2.5 years of data we have, there was a significant uptick in activity for all our filtered subreddits in early 2020, when COVID-19 lockdowns were being put in place around the world.
 
-Based on our brief sentiment analysis of the sentiment associated with each subreddit's submissions, we cannot conclusively say whether _activity level changes in subreddits are positively correlated with the degree of positive or negative sentiment associated with the activity._ We have only seen that there seems to be more positive sentiment associated with these contracted subreddits, but without looking at the growth subreddits as well, we cannot say whether that larger proportion of positive sentiment is meaningful or not.
+Based on our brief sentiment analysis of the sentiment associated with each subreddit's submissions, we cannot say whether _activity level changes in subreddits are positively correlated with the degree of positive or negative sentiment associated with the activity._ We have only seen that there seems to be more positive sentiment than negative sentiment associated with these all the subreddits we looked at. 
 
-If you'd like to learn more about me, check out this [video introduction of me](https://youtu.be/dQw4w9WgXcQ)
+Therefore we cannot accept/reject our hypothesis, that **activity level changes in subreddits are positively correlated with the degree of positive or negative sentiment associated with the activity.**
+
+Thank you for taking the time to read through my data story and coming along with me on this data journey. I hope you learned something new today!
+
+If you'd like to learn more about me, check out my [video introduction](https://youtu.be/dQw4w9WgXcQ)
 <br />
 <br />
 <br />
