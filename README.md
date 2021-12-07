@@ -915,13 +915,11 @@ We can however examine the average sentiment statistics:
       <th>neg</th>
       <th>neu</th>
       <th>pos</th>
-      <th>compound</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>count</th>
-      <td>140.000000</td>
       <td>140.000000</td>
       <td>140.000000</td>
       <td>140.000000</td>
@@ -931,49 +929,42 @@ We can however examine the average sentiment statistics:
       <td>0.099221</td>
       <td>0.754379</td>
       <td>0.146371</td>
-      <td>0.671417</td>
     </tr>
     <tr>
       <th>std</th>
       <td>0.034446</td>
       <td>0.052458</td>
       <td>0.037560</td>
-      <td>0.743613</td>
     </tr>
     <tr>
       <th>min</th>
       <td>0.003000</td>
       <td>0.609000</td>
       <td>0.007000</td>
-      <td>-1.000000</td>
     </tr>
     <tr>
       <th>25%</th>
       <td>0.079000</td>
       <td>0.726250</td>
       <td>0.131000</td>
-      <td>0.999900</td>
     </tr>
     <tr>
       <th>50%</th>
       <td>0.098500</td>
       <td>0.755000</td>
       <td>0.147500</td>
-      <td>1.000000</td>
     </tr>
     <tr>
       <th>75%</th>
       <td>0.119000</td>
       <td>0.780250</td>
       <td>0.165000</td>
-      <td>1.000000</td>
     </tr>
     <tr>
       <th>max</th>
       <td>0.240000</td>
       <td>0.989000</td>
       <td>0.326000</td>
-      <td>1.000000</td>
     </tr>
   </tbody>
 </table>
