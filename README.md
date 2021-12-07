@@ -854,13 +854,13 @@ We could probably explain the decline in COVID-19 related subreddits as people g
 
 ![animal_crossing.png](Figures/animal_crossing.png)
 
-## Analyzing the growth patterns of each cluster
+# Analyzing the growth patterns of each cluster
 
-### Growth clusters
+## Growth clusters
 
 ![png](Figures/output_99_0.png)
 
-### Contraction clusters
+## Contraction clusters
 
 ![png](Figures/output_101_0.png)
 
@@ -898,3 +898,5 @@ In the following section, we'll take a look at the sentiment associated with the
 To do this, we will be using the classic word2vec neural network along with the popular vader lexicon.
 
 Due to time constraints, I will only look at the contracted subreddits.
+
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/prop_sentiment_contract.html" height="525" width="100%"></iframe>  
