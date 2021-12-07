@@ -811,7 +811,7 @@ What the following plots do is group subreddits together into topics. We will st
 
 #### Subreddits that experienced growth
 
-<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/cluster_growth.html" height="525" width="100%"></iframe>  
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/cluster_growth.html" height="725" width="120%"></iframe>  
 
 It's much harder to distinguish groups within the growth subreddits, as they are made up of many different online communities. I attempt to classify them below:
 
@@ -828,7 +828,7 @@ It's much harder to distinguish groups within the growth subreddits, as they are
 
 ### Subreddits that experienced contraction
 
-<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/cluster_contract.html" height="525" width="100%"></iframe>  
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/cluster_contract.html" height="725" width="120%"></iframe>  
 
 On the left, we have a cluster of primarily gaming subreddits in green. They had a mix of low and high contraction in activity levels. These games however seemed to belong to a sub-category of big name FPS games, such as Overwatch, Call of Duty: Cold War, Battlefield V, The Last of Us 2, and Destiny. 
 
