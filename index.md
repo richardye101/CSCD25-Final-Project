@@ -811,7 +811,7 @@ What the following plots do is group subreddits together into topics. We will st
 
 #### Subreddits that experienced growth
 
-<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/cluster_growth.html" height="525" width="100%"></iframe>  
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="cluster_growth_new.html" height="725" width="120%"></iframe>  
 
 It's much harder to distinguish groups within the growth subreddits, as they are made up of many different online communities. I attempt to classify them below:
 
@@ -828,7 +828,7 @@ It's much harder to distinguish groups within the growth subreddits, as they are
 
 ### Subreddits that experienced contraction
 
-<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/cluster_growth.html" height="525" width="100%"></iframe>  
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="InteractivePlots/cluster_contract.html" height="725" width="120%"></iframe>  
 
 On the left, we have a cluster of primarily gaming subreddits in green. They had a mix of low and high contraction in activity levels. These games however seemed to belong to a sub-category of big name FPS games, such as Overwatch, Call of Duty: Cold War, Battlefield V, The Last of Us 2, and Destiny. 
 
@@ -1046,6 +1046,15 @@ We can also examine the average sentiment statistics:
 If we look at the row that describes the mean, we can see that there is on average 14.63% positive sentiment associated with these subreddits and 9.92% negative sentiment. 
 
 Based solely on this analysis, we see that the proportions of positive and negative sentiment are really similar between the subreddits that grew and those that contracted.
+
+### T-tests on positive and negative sentiment between subreddits that grew and subreddits that contracted
+
+- **P-value of positive sentiment t-test: 13.58%**
+- **P-value of negative sentiment t-test: 49.56%**
+
+From our t-tests of each negative and positive sentiment scores for each subreddit, we can see clearly from their p-values that they are both greater than 5%, which means we cannot reject the null hypothesis, which states that subreddits that contracted and grew should have the same negative and positive sentiment value on average.
+
+Therefore we there does not exist enough statistically significant proof that subreddits that grew and subreddits that contracted are _different_ in terms of sentiment.
 
 # Conclusion
 
